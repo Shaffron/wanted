@@ -32,7 +32,7 @@ ipython_config.py
 *.pyo
 
 # Test files
-*.http
+
 
 # Secrets
 .env

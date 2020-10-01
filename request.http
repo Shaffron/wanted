@@ -1,0 +1,21 @@
+### search by name
+GET localhost:5000/api/companies?keyword=원티드&category=name
+
+### search by tag
+GET localhost:5000/api/companies?keyword=태그_12&category=tag
+
+### add tag
+POST localhost:5000/api/companies/3/tag
+Content-Type: application/json
+
+{
+  "tag": "태그_12"
+}
+
+### delete tag
+DELETE localhost:5000/api/companies/3/tag
+Content-Type: application/json
+
+{
+  "tag": "태그_12"
+}
