@@ -4,6 +4,7 @@ from flask_restplus import Api
 from flask_script import Manager
 from flask_sqlalchemy import SQLAlchemy
 
+from csv_to_db import Immigration
 
 # app
 app = Flask(__name__)
@@ -15,6 +16,7 @@ db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 manager = Manager(app)
 manager.add_command("db", MigrateCommand)
+manager.add_command("immigrate", Immigration)
 
 # api routing
 from app.router import namespace
