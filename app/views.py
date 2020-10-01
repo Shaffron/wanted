@@ -72,12 +72,11 @@ class CompanyView(Resource):
 
         try:
             tag = args.get('tag')
-            language, tag_num = self.validate_tag_format(tag)
+            _, tag_num = self.validate_tag_format(tag)
 
-            insert_stmt = Tag.__table__.insert().values(company_id=company.id, title=tag, type=language)
-            db.session.execute(insert_stmt)
+            self.insert_tags(company_id=company.id, tag_num=tag_num)
 
-            update_stmt = self.add_tag(company, tag_num)
+            update_stmt = self.append_company_tag(company, tag_num)
             db.session.execute(update_stmt)
 
             db.session.commit()
@@ -105,12 +104,19 @@ class CompanyView(Resource):
             ).first()
 
             if not element:
-                abort(404, f'Company ID({company_id}) does not have tag ({tag})')
+                abort(404, f'Company(ID: {company_id}) does not have tag ({tag})')
 
-            delete_stmt = Tag.__table__.delete().where(Tag.id == element.id)
+            delete_stmt = Tag.__table__.delete().where(
+                Tag.id.in_(
+                    list(map(lambda x: x[0], Tag.query.with_entities(Tag.id).filter(
+                            Tag.company_id == company.id, Tag.title.like(f'%{tag_num}%')
+                        ).all()
+                    ))
+                )
+            )
             db.session.execute(delete_stmt)
 
-            update_stmt = self.delete_tag(company, tag_num)
+            update_stmt = self.subtract_company_tag(company, tag_num)
             db.session.execute(update_stmt)
 
             db.session.commit()
@@ -161,7 +167,18 @@ class CompanyView(Resource):
 
         return language
 
-    def add_tag(self, company: Company, tag_num: int) -> VisitableType:
+    def insert_tags(self, company_id, tag_num):
+        tag_objects = [
+            Tag(company_id=company_id, title=f'{WORD.KOREAN}_{tag_num}', type=LANGUAGE.KOREAN),
+            Tag(company_id=company_id, title=f'{WORD.ENGLISH}_{tag_num}', type=LANGUAGE.ENGLISH),
+            Tag(company_id=company_id, title=f'{WORD.JAPANESE}_{tag_num}', type=LANGUAGE.JAPANESE)
+        ]
+
+        db.session.bulk_save_objects(tag_objects)
+
+        return
+
+    def append_company_tag(self, company: Company, tag_num: int) -> VisitableType:
         korean_tags = company.tag_ko + f'|{WORD.KOREAN}_{tag_num}'
         english_tags = company.tag_en + f'|{WORD.ENGLISH}_{tag_num}'
         japanese_tags = company.tag_ja + f'|{WORD.JAPANESE}_{tag_num}'
@@ -174,7 +191,7 @@ class CompanyView(Resource):
 
         return stmt
 
-    def delete_tag(self, company: Company, tag_num: int):
+    def subtract_company_tag(self, company: Company, tag_num: int):
         korean_tags = self.delete_tag_in_tags(company.tag_ko, f'태그_{tag_num}')
         english_tags = self.delete_tag_in_tags(company.tag_en, f'tag_{tag_num}')
         japanese_tags = self.delete_tag_in_tags(company.tag_ja, f'タグ_{tag_num}')
