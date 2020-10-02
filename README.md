@@ -1,11 +1,13 @@
 # Wanted Coding Test
 
 ## Enviroment
-| product       | version  | required |
-|---------------|----------|----------|
-| Docker Server | 19.03.13 | YES      |
-| Docker Client | 19.03.13 | YES      |
-| SQLite3       | 3.20.9   | YES      |
+| product        | version  |
+|----------------|----------|
+| Python         | 3.8      |
+| Docker Server  | 19.03.13 |
+| Docker Client  | 19.03.13 |
+| Docker Compose | 1.27.4   |
+| SQLite3        | 3.20.9   |
 
 ## Set Up
 ```bash
@@ -31,4 +33,13 @@ curl -X POST -H "Content-Type: application/json" localhost:5000/api/companies/{c
 
 # 태그 삭제
 curl -X DELETE -H "Content-Type: application/json" localhost:5000/api/companies/{company_id}/tag -d '{"tag":"태그_99"}'
+```
+
+## Test
+```
+python3 -m venv virtualenv
+source virtualenv/bin/activate
+pip install -r requirements.txt
+
+python -m unittest --verbose tests/test_api.py
 ```
