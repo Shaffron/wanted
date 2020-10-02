@@ -26,17 +26,11 @@ ipython_config.py
 
 # IDE
 .idea/*
+.vscode/*
 
 # Python Complied
 *.pyc
 *.pyo
 
-# Test files
-
-
-# Secrets
-.env
-
 # Migrations
 migrations/*
-

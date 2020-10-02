@@ -1,3 +1,5 @@
+import os
+
 from flask import Flask
 from flask_migrate import Migrate, MigrateCommand
 from flask_restplus import Api
@@ -9,7 +11,7 @@ from csv_to_db import Immigration
 # app
 app = Flask(__name__)
 app.config.from_object('config')
-app.secret_key = 'wanted_secret_key'
+app.secret_key = os.getenv('SECRET_KEY')
 
 # database
 db = SQLAlchemy(app)
