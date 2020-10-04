@@ -15,6 +15,15 @@ cd {git cloned directory}
 docker-compose up
 ```
 
+## API Doc
+| URI                                            | Method   | Body                     | Response                                                                                                                                                   |
+|------------------------------------------------|----------|--------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| /api/companies                                 | GET      |                          | ``` [{ "id": 1, "company_en": "Wantedlab", "company_ja": null, "company_ko": "원티드랩", "tag_en": "tag_4", "tag_ja": "タグ_4", "tag_ko": "태그_4" }, ...] ```  |
+| /api/companies/keyword={keyword}&category=tag  | GET      |                          | ``` [{ "id": 1, "company_en": "Wantedlab", "company_ja": null, "company_ko": "원티드랩", "tag_en": "tag_4", "tag_ja": "タグ_4", "tag_ko": "태그_4" }, ...] ```  |
+| /api/companies/keyword={keyword}&category=name | GET      |                          | ``` [{ "id": 1, "company_en": "Wantedlab", "company_ja": null, "company_ko": "원티드랩", "tag_en": "tag_4", "tag_ja": "タグ_4", "tag_ko": "태그_4" }, ...] ```  |
+| /api/companies/{company_id}/tag                | POST     | ``` {"tag": '태그_1'} ``` |                                                                                                                                                             |
+| /api/companies/{company_id}/tag                | DELETE   | ``` {"tag": '태그_1'} ``` |                                                                                                                                                             |
+
 ## Requests
 * .http 파일 실행을 지원하는 Jetbrains, VSCode 등의 IDE 가 있으면 디렉토리 내에 첨부된 <code>request.http</code> 파일로 API 를 테스트 할 수 있습니다.
 * 아래 curl command 로도 실행 할 수 있습니다. (특수문자 escape 처리가 필요 할 수 있습니다.)
